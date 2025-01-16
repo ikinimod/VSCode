@@ -2,7 +2,7 @@ import tkinter as tk
 from tkinter import ttk
 import requests
 # requests need to be installed
-import time
+from datetime import datetime
 import pandas as pd
 # pandas need to be isntalled
 
