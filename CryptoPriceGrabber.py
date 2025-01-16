@@ -36,6 +36,11 @@ def save_price_to_csv(crypto_id, currency, price, filename="crypto_prices.csv"):
     df = pd.DataFrame(data)
     df.to_csv(filename, mode='a', header=not pd.io.common.file_exists(filename), index=False)
 
+# Function to auto-fetch price
+def auto_fetch():
+    fetch_price()  # Fetch the price
+    root.after(interval_ms, auto_fetch)  # Schedule the next fetch
+
 # Tkinter GUI
 root = tk.Tk()
 root.title("Crypto Price Tracker")
@@ -58,6 +63,12 @@ fetch_button.pack(pady=10)
 # Label to display the price
 price_label = ttk.Label(root, text="Select a cryptocurrency and currency to get the price.", font=("Arial", 12))
 price_label.pack(pady=10)
+
+# Auto-fetch interval in milliseconds (e.g., 60000ms = 60 seconds)
+interval_ms = 30000  # 30 seconds
+
+# Start auto-fetching
+auto_fetch()
 
 # Run the Tkinter main loop
 root.mainloop()
