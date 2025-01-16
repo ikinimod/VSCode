@@ -43,8 +43,14 @@ def auto_fetch():
 
 # Tkinter GUI
 root = tk.Tk()
-root.title("Crypto Price Tracker")
+root.title("VerCKRACKter Crypto Price Tracker")
 root.geometry("400x200")
+root.configure(bg="#2E3B4E")
+
+# Window buttons and text style
+style = ttk.Style()
+style.configure("TButton", font=("Helvetica", 12), padding=10, background="black", foreground="black")
+style.configure("TLabel", font=("Helvetica", 14), background="#2E3B4E", foreground="white")
 
 # Dropdown for selecting cryptocurrency
 crypto_var = tk.StringVar(value="bitcoin")
@@ -72,3 +78,5 @@ auto_fetch()
 
 # Run the Tkinter main loop
 root.mainloop()
+
+
