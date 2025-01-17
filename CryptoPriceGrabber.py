@@ -43,7 +43,7 @@ def fetch_top_price():
 
 
 # Save price to a CSV file
-def save_price_to_csv(crypto_id, currency, price, filename="crypto_prices.csv"):
+def save_price_to_csv(crypto_id, currency, price, filename="C:/Users/domin/Documents/crypto_prices.csv"):
     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     data = {"Timestamp": [timestamp], "Crypto": [crypto_id], "Currency": [currency], "Price": [price]}
     df = pd.DataFrame(data)
