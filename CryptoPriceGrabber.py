@@ -18,16 +18,29 @@ def get_crypto_price(crypto_id, currency):
     except requests.exceptions.RequestException as e:
         return None
 
-# Function to fetch and display the price
-def fetch_price():
-    crypto_id = crypto_var.get()
-    currency = currency_var.get()
+
+# Function to fetch and display the price for the top section
+def fetch_top_price():
+    crypto_id = top_crypto_var.get()
+    currency = top_currency_var.get()
     price = get_crypto_price(crypto_id, currency)
     if price is not None:
-        price_label.config(text=f"Der Preis von {crypto_id} in {currency.upper()} ist: {price}")
+        top_price_label.config(text=f"Der Preis von {crypto_id} in {currency.upper()} ist: {price}")
         save_price_to_csv(crypto_id, currency, price)
     else:
-        price_label.config(text="Error fetching price!")
+        top_price_label.config(text="Fehler beim Abrufen des Preises!")
+
+
+  # Function to auto-fetch prices for multiple cryptos
+# def fetch_multiple_prices():
+#     for crypto_id in multiple_cryptos:
+#         price = get_crypto_price(crypto_id, "usd")
+#         if price is not None:
+#             multiple_prices_labels[crypto_id].config(text=f"{crypto_id.capitalize()}: {price} USD")
+#         else:
+#             multiple_prices_labels[crypto_id].config(text=f"{crypto_id.capitalize()}: Fehler beim Abrufen!")
+#     root.after(auto_fetch_interval, fetch_multiple_prices)  # Schedule the next fetch
+
 
 # Save price to a CSV file
 def save_price_to_csv(crypto_id, currency, price, filename="crypto_prices.csv"):
@@ -36,47 +49,51 @@ def save_price_to_csv(crypto_id, currency, price, filename="crypto_prices.csv"):
     df = pd.DataFrame(data)
     df.to_csv(filename, mode='a', header=not pd.io.common.file_exists(filename), index=False)
 
-# Function to auto-fetch price
-def auto_fetch():
-    fetch_price()  # Fetch the price
-    root.after(interval_ms, auto_fetch)  # Schedule the next fetch
 
 # Tkinter GUI
 root = tk.Tk()
-root.title("Preis Tracker Crypto")
-root.geometry("400x200")
+root.title("Crypto Price Tracker")
+root.geometry("500x400")
 root.configure(bg="#2E3B4E")
 
-# Window buttons and text style
+# Styling
 style = ttk.Style()
-style.configure("TButton", font=("Helvetica", 12), padding=10, background="black", foreground="black")
-style.configure("TLabel", font=("Helvetica", 14), background="#2E3B4E", foreground="white")
+style.configure("TButton", font=("Helvetica", 12), padding=10)
+style.configure("TLabel", font=("Helvetica", 12), background="#2E3B4E", foreground="white")
 
-# Dropdown for selecting cryptocurrency
-crypto_var = tk.StringVar(value="bitcoin")
-crypto_dropdown = ttk.Combobox(root, textvariable=crypto_var, values=["bitcoin", "ethereum", "dogecoin", "cardano", "solana", "ripple"])
-crypto_dropdown.pack(pady=10)
+# Top section for manual fetching
+top_crypto_var = tk.StringVar(value="bitcoin")
+top_currency_var = tk.StringVar(value="usd")
 
-# Dropdown for selecting currency
-currency_var = tk.StringVar(value="usd")
-currency_dropdown = ttk.Combobox(root, textvariable=currency_var, values=["usd", "eur", "gbp", "inr"])
-currency_dropdown.pack(pady=10)
+ttk.Label(root, text="Kryptowährung auswählen:").pack(pady=5)
+top_crypto_dropdown = ttk.Combobox(root, textvariable=top_crypto_var, values=["bitcoin", "ethereum", "dogecoin", "cardano", "solana", "ripple"])
+top_crypto_dropdown.pack(pady=5)
 
-# Button to fetch price
-fetch_button = ttk.Button(root, text="Preis aktualisieren", command=fetch_price)
+ttk.Label(root, text="Währung auswählen:").pack(pady=5)
+top_currency_dropdown = ttk.Combobox(root, textvariable=top_currency_var, values=["usd", "eur", "gbp", "inr"])
+top_currency_dropdown.pack(pady=5)
+
+fetch_button = ttk.Button(root, text="Preis aktualisieren", command=fetch_top_price)
 fetch_button.pack(pady=10)
 
-# Label to display the price
-price_label = ttk.Label(root, text="Wähle eine Kryptowährung und eine Währung", font=("Arial", 12))
-price_label.pack(pady=10)
+top_price_label = ttk.Label(root, text="Wähle eine Kryptowährung und eine Währung")
+top_price_label.pack(pady=10)
 
-# Auto-fetch interval in milliseconds (e.g., 60000ms = 60 seconds)
-interval_ms = 30000  # 30 seconds
+  # Bottom section for auto-fetching multiple cryptos
+# ttk.Label(root, text="Live-Preise für mehrere Kryptowährungen:").pack(pady=10)
 
-# Start auto-fetching
-auto_fetch()
+# multiple_cryptos = ["bitcoin", "ethereum", "dogecoin"]
+# multiple_prices_labels = {}
+
+  # for crypto in multiple_cryptos:
+#     label = ttk.Label(root, text=f"{crypto.capitalize()}: --")
+#     label.pack()
+#     multiple_prices_labels[crypto] = label
+
+# Auto-fetch interval in milliseconds
+auto_fetch_interval = 30000  # 30 seconds
+
+# fetch_multiple_prices()  # Start auto-fetching
 
 # Run the Tkinter main loop
 root.mainloop()
-
-
